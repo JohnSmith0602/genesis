@@ -63,6 +63,96 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PATH-enlightenment" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/08/PATH-enlightenment/" class="article-date">
+  <time datetime="2014-11-07T17:34:02.000Z" itemprop="datePublished">Nov 8 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/計算機/">計算機</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/08/PATH-enlightenment/">學會使用$PATH</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>源文：<a href="http://alistapart.com/article/the-path-to-enlightenment" target="_blank" rel="external">The $PATH to Enlightenment</a></p>
+<p>命令行（The Command Line）在流行文化中被描述成專屬於電腦黑客和極客的神奇工具，但它在現實生活中使用起來並沒有那麼「酷」，只是一些非常簡單的工具集合而已。它出生於1970年代的貝爾實驗室，主要被寄望於完成一些簡單的任務。其實只要掌握了幾個基本概念，就可以玩轉命令行。<strong>Path</strong>，就是這幾個基本概念中的一個。</p>
+<h4 id="一個重要的變量：$PATH">一個重要的變量：$PATH</h4>
+<p>$PATH，美元符前綴+全大寫字母，表示UNIX中的一個環境變量。$PATH指定了計算機運行可執行文件時的查找/加載路徑。</p>
+<ul>
+<li>查看所有環境變量的方法：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ env</div></pre></td></tr></table></figure>
+
+<ul>
+<li>查看$PATH的值（多個加載路徑間用冒號隔開）：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">echo</span> <span class="variable">$PATH</span></div><div class="line">/usr/local/heroku/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</div></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">echo</span> <span class="variable">$PATH</span> | tr <span class="string">':'</span> <span class="string">'\n'</span></div><div class="line">/usr/local/heroku/bin</div><div class="line">/usr/local/bin</div><div class="line">/usr/bin</div><div class="line">/bin</div><div class="line">/usr/sbin</div><div class="line">/sbin</div></pre></td></tr></table></figure>
+
+<ul>
+<li>修改$PATH值：一次性的話，在命令行中修改；一勞永逸的話，在<em>~/.bash-profile</em>文件中修改。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">export</span> PATH=Hallo <span class="variable">$PATH</span></div></pre></td></tr></table></figure>
+
+<h4 id="多版本的二進制文件">多版本的二進制文件</h4>
+<p>在UNIX中，可執行程序是二進制文件。UNIX中有多個存儲二進制文件的文件夾，在<em>/etc/paths</em>中可以查看這些文件夾的地址。由於paths文件中是有序地選擇加載地址，所以文件中的第一個文件夾地址就是加載二進制文件的默認路徑。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ cat /etc/paths</div><div class="line">/usr/local/bin</div><div class="line">/usr/bin</div><div class="line">/bin</div><div class="line">/usr/sbin</div><div class="line">/sbin</div></pre></td></tr></table></figure>
+
+<ul>
+<li>查看二進制文件默認被執行版本的路徑：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ which git</div><div class="line">/usr/local/bin/git</div></pre></td></tr></table></figure>
+
+<ul>
+<li>查看二進制文件所有版本的路徑（第一個即爲默認被執行版本的路徑）：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ which <span class="operator">-a</span> git</div><div class="line">/usr/local/bin/git</div><div class="line">/usr/bin/git</div></pre></td></tr></table></figure>
+
+<h4 id="修改路徑">修改路徑</h4>
+<p>當存在同一個可執行程序的多個版本時，我們可以通過修改路徑的方式確定默認執行哪個版本的二進制文件。修改路徑的方式主要有：</p>
+<ul>
+<li><p>調整<em>/etc/paths</em>中路徑的先後順序。<br>這個方法雖然可以達到目的，但絕對不要使用。因爲<em>/etc</em>文件夾中的配置會影響到整個系統，它不應該被某一個用戶去修改。對它的改動也很可能會導致一些其它的問題。</p>
+</li>
+<li><p>在用戶自己環境下的.bash_profile文件中修改$PATH的值：</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">sudo</span> vim ~/.bash_profile</div><div class="line"><span class="keyword">export</span> PATH=/user/local/bin:<span class="variable">$PATH</span></div></pre></td></tr></table></figure>
+
+<p>這樣你就可以按需選擇默認執行的二進制文件的版本。如果你又不再想使用自己安裝的版本，刪掉即可，執行時系統會自動地找到系統提供的版本。</p>
+<h4 id="管理PATH">管理PATH</h4>
+<p>很多應用會在安裝時修改你的.bash_profile文件。一個臃腫的$PATH配置會造成加載shell的速度變慢，所以你可以定期查看你的$PATH，確認其中的配置都是有意義的；如果有可以優化的地方，通過修改<em>~/.bash_profile</em>文件進行修改。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/08/PATH-enlightenment/" data-id="sz7v8mjzehozyho1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/11/06/hello-world/" class="article-date">
@@ -107,7 +197,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/06/hello-world/" data-id="995kzr3u99jvlpvc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/11/06/hello-world/" data-id="of0r1c5ffv518gm9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -123,6 +213,13 @@
           <aside id="sidebar">
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/計算機/">計算機</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
   
     
   
@@ -132,7 +229,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -142,6 +239,10 @@
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/11/08/PATH-enlightenment/">學會使用$PATH</a>
+          </li>
         
           <li>
             <a href="/2014/11/06/hello-world/">Hello World</a>
